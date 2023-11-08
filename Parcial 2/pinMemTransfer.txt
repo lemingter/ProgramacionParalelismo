@@ -1,0 +1,76 @@
+(las operaciones explicadas en otros documentos tienen descripciones acortadas)
+
+Se realizaron 2 actividades de GPU:
+1-CUDA memcpy HtoD
+Esta funcion ejecutada en la linea 53 se encarga de copiar datos desde el host al dispositivo
+En este caso esta operacion tomo un 50.57% del tiempo de ejecucion con un total de 1.30 ms y fue llamado 1 vez
+
+2-CUDA memcpy DtoH
+Esta funcion ejecutada en la linea 56 se encarga de copiar datos desde el dispositivo al host
+En este caso esta operacion tomo un 49.43% del tiempo de ejecucion con un total de 1.27 ms y fue llamado 1 vez
+
+Se realizaron 15 llamados de API:
+1-cudaHostAlloc
+Esta funcion no es usada en el codigo directamente pero se encarga de asignar memoria en el host, recibe los atributos
+	pHost - apuntador a la memoria a asignar
+	size - El tamaño de la memoria a asignar
+	flags - Propiedades especificas de la memoria asignada
+En este caso esta operacion tomo un 93.65% del tiempo de ejecucion con un total de 564.84 ms y fue llamado 1 vez
+
+2-cudaDeviceReset
+Esta funcion es usada en la linea 30 y 63 y sirve para liberar cualquier espacio en memoria que tenga que ver con el programa actual
+y resetear sus valores
+En este caso esta operacion tomo un 5.15% del tiempo de ejecucion con un total de 31.05 ms y fue llamado 1 vez
+
+3-cudaMemcpy
+Esta funcion es usada en la linea 53 y 56 y sirve para copiar datos entre la CPU y la GPU
+En este caso esta operacion tomo un 0.45% del tiempo de ejecucion con un total de 2.73 ms y fue llamado 2 veces
+
+4-cuDeviceGetPCIBusId
+Esta funcion no es usada directamente en el codigo pero retorna un Bus PCI que lleva a la GP en la forma de una cadena de caracteres
+En este caso esta operacion tomo un 0.34% del tiempo de ejecucion con un total de 2.06 ms y fue llamado 1 vez
+
+5-cudaFreeHost
+Esta funcion es usada en la linea 60 y sirve para liberar memoria de tipo page-locked, recibe los parametros:
+	ptr - apuntador a la memoria a ser liverada
+En este caso esta operacion tomo un 0.30% del tiempo de ejecucion con un total de 1.80 ms y fue llamado 1 vez
+
+6-cudaMalloc
+Esta funcion es usada en la linea 45 y sirve para asignar memoria en GPU
+En este caso esta operacion tomo un 0.06% del tiempo de ejecucion con un total de 342.90 us y fue llamado 1 vez
+
+7-cudaFree
+Esta funcion es usada en la linea 59 y sirve para liberar el espacio en memoria de una direccion especifica
+En este caso esta operacion tomo un 0.04% del tiempo de ejecucion con un total de 261.00 us y fue llamado 1 vez
+
+8-cuDeviceGetAttribute
+Esta funcion no se encuantra directamente en el codigo y se encarga de devolver informacion acerca de la GPU
+En este caso esta operacion tomo un 0.00% del tiempo de ejecucion con un total de 15.40 us y fue llamado 101 veces
+
+9-cudaSetDevice
+Esta funcion es usada en la linea 17 y sirve paraestablecer que dispositivo se usara para las operaciones de GPU
+En este caso esta operacion tomo un 0.00% del tiempo de ejecucion con un total de 7.20 us y fue llamado 1 vez
+
+10-cudaGetDeviceProperties
+Esta funcion es usada en la linea 25 y sirve para obtener informacion acerca de la GPU
+En este caso esta operacion tomo un 0.00% del tiempo de ejecucion con un total de 2.40 us y fue llamado 1 vez
+
+11-cuDeviceGetCount
+Esta funcion no es usada directamente en el codigo y sirve para obtener el numero de dispositivos en el sistema
+En este caso esta operacion tomo un 0.00% del tiempo de ejecucion con un total de 1.00 us y fue llamado 3 veces
+
+12-cuDeviceGet
+Esta funcion no es usada en el codigo y retorna un identificador en el rango  [0, cuDeviceGetCount()-1]
+En este caso esta operacion tomo un 0.00% del tiempo de ejecucion con un total de 1.00 us y fue llamado 2 veces
+
+13-cuDeviceGetName
+Esta funcion no es usada directamente en el codigo y retorna el nombre de un dispositivo
+En este caso esta operacion tomo un 0.00% del tiempo de ejecucion con un total de 600 ns y fue llamado 1 vez
+
+14-cuDeviceTotalMem
+Esta funcion no es usada directamente en el codigo y retorna cuanta memoria existe en total en el dispositivo
+En este caso esta operacion tomo un 0.00% del tiempo de ejecucion con un total de 400 ns y fue llamado 1 vez
+
+15-cuDeviceGetUuid
+Esta funcion no es usada directamente en el codigo y retorna un UUID para el dispositivo
+En este caso esta operacion tomo un 0.00% del tiempo de ejecucion con un total de 200 ns y fue llamado 1 vez
