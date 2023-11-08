@@ -1,0 +1,94 @@
+(las operaciones explicadas en otros documentos tienen descripciones acortadas)
+
+Se realizaron 4 actividades de GPU:
+1-CUDA memcpy HtoD
+Esta funcion ejecutada en la linea 133 se encarga de copiar datos desde el host al dispositivo
+En este caso esta operacion tomo un 49.71% del tiempo de ejecucion con un total de 992.10 us y fue llamado 1 vez
+
+2-CUDA memcpy DtoH
+Esta funcion ejecutada en la linea 112 y 113 se encarga de copiar datos desde el dispositivo al host
+En este caso esta operacion tomo un 45.41% del tiempo de ejecucion con un total de 906.47 us y fue llamado 2 veces
+
+3-readOffset
+Esta funcion es declarada en la linea 56 y es usado en la linea 125, se encarga de realizar la suma de un elemento en 2 arreglos y 
+guardar el resultado en un tercero, recibe los atributos:
+	A, B, C - arreglos almacenados en GPU
+	n - el numero total de elementos a reducir
+	offset - un desplazamiento que se usa para determinar si la operacion se realiza
+En este caso esta operacion tomo un 2.48% del tiempo de ejecucion con un total de 49.40 us y fue llamado 1 vez
+
+4-warmup
+Esta funcion es declarada en la linea 48, es usada en la linea 117 y sirve para hacer la misma operacion que readOffset, recibe los mismos atributos
+En este caso esta operacion tomo un 2.40% del tiempo de ejecucion con un total de 48.00 us y fue llamado 1 vez
+
+Se realizaron 16 llamados de API:
+1-cudaMalloc
+Esta funcion es usada en la linea 107, 108 y 109 y sirve para asignar memoria en GPU
+En este caso esta operacion tomo un 93.88% del tiempo de ejecucion con un total de 603.77 ms y fue llamado 3 vez
+
+2-cudaDeviceReset
+Esta funcion es usada en la linea 144 y sirve para liberar cualquier espacio en memoria que tenga que ver con el programa actual
+y resetear sus valores
+En este caso esta operacion tomo un 5.02% del tiempo de ejecucion con un total de 32.29 ms y fue llamado 1 vez
+
+3-cudaMemcpy
+Esta funcion es usada en la linea 112, 113 y 133 y sirve para copiar datos entre la CPU y la GPU
+En este caso esta operacion tomo un 0.52% del tiempo de ejecucion con un total de 3.36 ms y fue llamado 3 veces
+
+4-cuDeviceGetPCIBusId
+Esta funcion no es usada directamente en el codigo pero retorna un Bus PCI que lleva a la GP en la forma de una cadena de caracteres
+En este caso esta operacion tomo un 0.40% del tiempo de ejecucion con un total de 2.54 ms y fue llamado 1 vez
+
+5-cudaFree
+Esta funcion es usada en la linea 137, 138 y 139 y sirve para liberar el espacio en memoria de una direccion especifica
+En este caso esta operacion tomo un 0.13% del tiempo de ejecucion con un total de 833.20 us y fue llamado 3 vez
+
+6-cudaDeviceSynchronize
+Esta funcion es usada en la linea 118 y 126 y sive para esperar a que el dispositivo termine
+En este caso esta operacion tomo un 0.03% del tiempo de ejecucion con un total de 206.30 us y fue llamado 2 veces
+
+7-cudaLaunchKernel
+Esta funcion no es usada directamente en el codigo y se encarga de ejecutar una funcion de la GPU , recibe los atributos:
+	func - la funcion a ser ejecutada
+	gridDim - la dimencion del Grid
+	blockDim - la dimencion del Block
+	args - argumentos a usar en la funcion
+	sharedMem - memoria compartida para cada thread block
+	stream - flujo al que la ejecucion va a estar asociado
+En este caso esta operacion tomo un 0.01% del tiempo de ejecucion con un total de 65.80 us y fue llamado 2 veces
+
+8-cuDeviceGetAttribute
+Esta funcion no se encuantra directamente en el codigo y se encarga de devolver informacion acerca de la GPU
+En este caso esta operacion tomo un 0.00% del tiempo de ejecucion con un total de 15.80 us y fue llamado 101 veces
+
+9-cudaSetDevice
+Esta funcion es usada en la linea 73 y sirve paraestablecer que dispositivo se usara para las operaciones de GPU
+En este caso esta operacion tomo un 0.00% del tiempo de ejecucion con un total de 5.50 us y fue llamado 1 vez
+
+10-cudaGetDeviceProperties
+Esta funcion es usada en la linea 70 y sirve para obtener informacion acerca de la GPU
+En este caso esta operacion tomo un 0.00% del tiempo de ejecucion con un total de 4.90 us y fue llamado 1 vez
+
+11-cudaGetLastError
+Esta funcion es usada en la linea 122 y 130 y sirve para retornar el ultimo error que se a producido en el programa y resetearlo a cudaSuccess
+En este caso esta operacion tomo un 0.00% del tiempo de ejecucion con un total de 1.20 us y fue llamado 2 veces
+
+12-cuDeviceGetCount
+Esta funcion no es usada directamente en el codigo y sirve para obtener el numero de dispositivos en el sistema
+En este caso esta operacion tomo un 0.00% del tiempo de ejecucion con un total de 900 ns y fue llamado 3 veces
+
+13-cuDeviceGet
+Esta funcion no es usada en el codigo y retorna un identificador en el rango  [0, cuDeviceGetCount()-1]
+En este caso esta operacion tomo un 0.00% del tiempo de ejecucion con un total de 800 ns y fue llamado 2 veces
+
+14-cuDeviceGetName
+Esta funcion no es usada directamente en el codigo y retorna el nombre de un dispositivo
+En este caso esta operacion tomo un 0.00% del tiempo de ejecucion con un total de 800 ns y fue llamado 1 vez
+
+15-cuDeviceTotalMem
+Esta funcion no es usada directamente en el codigo y retorna cuanta memoria existe en total en el dispositivo
+En este caso esta operacion tomo un 0.00% del tiempo de ejecucion con un total de 500 ns y fue llamado 1 vez
+
+16-cuDeviceGetUuid
+Esta funcion no es usada directamente en el codigo y retorna un UUID para el dispositivo
+En este caso esta operacion tomo un 0.00% del tiempo de ejecucion con un total de 200 ns y fue llamado 1 vez
