@@ -1,0 +1,19 @@
+(las operaciones explicadas en otros documentos tienen descripciones acortadas)
+
+Se realizaron 6 actividades de GPU:
+1-CUDA memcpy DtoH
+Esta funcion ejecutada en la linea 161, 174 y 187 se encarga de copiar datos desde el dispositivo al host
+En este caso esta operacion tomo un 65.98% del tiempo de ejecucion con un total de 2.11 ms y fue llamado 3 veces
+
+2-CUDA memcpy HtoD
+Esta funcion ejecutada en la linea 139 y 140 se encarga de copiar datos desde el host al dispositivo
+En este caso esta operacion tomo un 29.36% del tiempo de ejecucion con un total de 940.23 us y fue llamado 2 veces
+
+3-writeOffset
+Esta funcion es declarada en la linea 47, es usada en la linea 153 y se encarga de sumar dos datos y guardarlos con un offset
+En este caso esta operacion tomo un 1.55% del tiempo de ejecucion con un total de 49.50 us y fue llamado 1 veces
+
+Se realizaron 16 llamados de API:
+1-cudaMalloc
+Esta funcion es usada en la linea 129, 130 y 131 y sirve para asignar memoria en GPU
+En este caso esta operacion tomo un 87.57% del tiempo de ejecucion con un total de 607.17 ms y fue llamado 3 vez
