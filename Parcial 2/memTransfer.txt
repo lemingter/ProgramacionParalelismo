@@ -64,7 +64,9 @@ Esta funcion no es usada en el codigo y sirve para obtener el numero de disposit
 En este caso esta operacion tomo un 0.00% del tiempo de ejecucion con un total de 1.40 us y fue llamado 3 veces
 
 10-cuDeviceGet
-Esta funcion no es usada en el codigo y no se para que sirve ya que no viene en la documentacion CUDA
+Esta funcion no es usada en el codigo y retorna un identificador en el rango  [0, cuDeviceGetCount()-1], recive los atributos:
+	device - el identificador retornado
+	ordinal - el indice del dispositivo a identificar
 En este caso esta operacion tomo un 0.00% del tiempo de ejecucion con un total de 900 ns y fue llamado 2 veces
 
 11-cuDeviceGetName
@@ -75,9 +77,13 @@ Esta funcion no es usada directamente en el codigo y retorna el nombre de un dis
 En este caso esta operacion tomo un 0.00% del tiempo de ejecucion con un total de 900 ns y fue llamado 1 vez
 
 12-cuDeviceTotalMem
-Esta funcion no es usada directamente en el codigo y no estoy seguro de lo que hace pero supongo que retorna cuanta memoria existe en total en el dispositivo
+Esta funcion no es usada directamente en el codigo y retorna cuanta memoria existe en total en el dispositivo, recibe los atributos:
+	bytes - la cantidad total de memoria disponible en bytes
+	dev - el identificador del dispositivo
 En este caso esta operacion tomo un 0.00% del tiempo de ejecucion con un total de 400 ns y fue llamado 1 vez
 
 13-cuDeviceGetUuid
-Esta funcion no es usada directamente en el codigo y no estoy seguro de lo que hace pero supongo que retorna un uu id
+Esta funcion no es usada directamente en el codigo y retorna un UUID para el dispositivo, recibe los atributos:
+	uuid - El UUID retornado
+	dev - El dispositivo del que se requiere el UUID
 En este caso esta operacion tomo un 0.00% del tiempo de ejecucion con un total de 200 ns y fue llamado 1 vez
