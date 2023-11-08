@@ -77,15 +77,14 @@ En este caso esta operacion tomo un 0.00% del tiempo de ejecucion con un total d
 Esta funcion no es usada en el codigo y retorna un identificador en el rango  [0, cuDeviceGetCount()-1]
 En este caso esta operacion tomo un 0.00% del tiempo de ejecucion con un total de 1.00 us y fue llamado 2 veces
 
-11-cudaGetLastError
+15-cudaGetLastError
 Esta funcion es usada en la linea 161 y sirve para retornar el ultimo error que se a producido en el programa y resetearlo a cudaSuccess
 En este caso esta operacion tomo un 0.00% del tiempo de ejecucion con un total de 700 ns y fue llamado 1 veces
 
-
-15-cuDeviceTotalMem
+16-cuDeviceTotalMem
 Esta funcion no es usada directamente en el codigo y retorna cuanta memoria existe en total en el dispositivo
 En este caso esta operacion tomo un 0.00% del tiempo de ejecucion con un total de 300 ns y fue llamado 1 vez
 
-16-cuDeviceGetUuid
+17-cuDeviceGetUuid
 Esta funcion no es usada directamente en el codigo y retorna un UUID para el dispositivo
 En este caso esta operacion tomo un 0.00% del tiempo de ejecucion con un total de 200 ns y fue llamado 1 vez
