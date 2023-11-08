@@ -1,0 +1,95 @@
+(las operaciones explicadas en otros documentos tienen descripciones acortadas)
+
+Se realizaron 4 actividades de GPU:
+1-sumArraysZeroCopy
+Esta funcion es declarada en la linea 60, es usada en la linea 173 y se encarga de sumar dos valores de dos arreglos y 
+guardar el resultado en un tercero, recibe los atributos
+	A, B - arreglos que contienen los valores a sumar
+	C - arreglo en el que se devuelve el resultado
+	N - numero de elementos en los arreglos
+En este caso esta operacion tomo un 33.33% del tiempo de ejecucion con un total de 3.52 us y fue llamado 1 vez
+
+2-CUDA memcpy DtoH
+Esta funcion ejecutada en la linea 141 y 176 se encarga de copiar datos desde el dispositivo al host
+En este caso esta operacion tomo un 22.73% del tiempo de ejecucion con un total de 2.40 us y fue llamado 2 veces
+
+3-sumArrays
+Esta funcion es declarada en la linea 53, es usada en la linea 138 y funciona de la misma forma que sumArraysZeroCopy
+En este caso esta operacion tomo un 22.12% del tiempo de ejecucion con un total de 2.33 us y fue llamado 1 vez
+
+4-CUDA memcpy HtoD
+Esta funcion ejecutada en la linea 130 y 131 se encarga de copiar datos desde el host al dispositivo
+En este caso esta operacion tomo un 21.82% del tiempo de ejecucion con un total de 2.30 us y fue llamado 2 veces
+
+Se realizaron 17 llamados de API:
+1-cudaMalloc
+Esta funcion es usada en la linea 125, 126 y 127 y sirve para asignar memoria en GPU
+En este caso esta operacion tomo un 94.24% del tiempo de ejecucion con un total de 583.14 ms y fue llamado 3 vez
+
+2-cudaDeviceReset
+Esta funcion es usada en la linea 81 y 190 y sirve para liberar cualquier espacio en memoria que tenga que ver con el programa actual
+y resetear sus valores
+En este caso esta operacion tomo un 5.09% del tiempo de ejecucion con un total de 31.47 ms y fue llamado 2 veces
+
+3-cuDeviceGetPCIBusId
+Esta funcion no es usada directamente en el codigo pero retorna un Bus PCI que lleva a la GP en la forma de una cadena de caracteres
+En este caso esta operacion tomo un 0.35% del tiempo de ejecucion con un total de 2.17 ms y fue llamado 1 vez
+
+4-cudaHostAlloc
+Esta funcion es usada en la linea 156 y 157 y sive para apartar memoria en el host
+En este caso esta operacion tomo un 0.16% del tiempo de ejecucion con un total de 988.60 us y fue llamado 2 veces
+
+5-cudaFreeHost
+Esta funcion es usada en la linea 183 y 184 y sive para liverar memoria en el host
+En este caso esta operacion tomo un 0.06% del tiempo de ejecucion con un total de 368.90 us y fue llamado 2 veces
+
+6-cudaMemcpy
+Esta funcion es usada en la linea 130, 131, 141 y 176 y sirve para copiar datos entre la CPU y la GPU
+En este caso esta operacion tomo un 0.06% del tiempo de ejecucion con un total de 358.00 us y fue llamado 4 veces
+
+7-cudaFree
+Esta funcion es usada en la linea 182 183 y 184 y sirve para liberar el espacio en memoria de una direccion especifica
+En este caso esta operacion tomo un 0.04% del tiempo de ejecucion con un total de 218.20 us y fue llamado 3 veces
+
+8-cudaLaunchKernel
+Esta funcion no es usada directamente en el codigo y se encarga de ejecutar una funcion de la GPU
+En este caso esta operacion tomo un 0.01% del tiempo de ejecucion con un total de 60.30 us y fue llamado 2 veces
+
+9-cuDeviceGetAttribute
+Esta funcion no se encuantra directamente en el codigo y se encarga de devolver informacion acerca de la GPU
+En este caso esta operacion tomo un 0.00% del tiempo de ejecucion con un total de 14.90 us y fue llamado 101 veces
+
+10-cudaSetDevice
+Esta funcion es usada en la linea 71 y sirve paraestablecer que dispositivo se usara para las operaciones de GPU
+En este caso esta operacion tomo un 0.00% del tiempo de ejecucion con un total de 6.20 us y fue llamado 1 vez
+
+11-cudaGetDeviceProperties
+Esta funcion es usada en la linea 75 y sirve para obtener informacion acerca de la GPU
+En este caso esta operacion tomo un 0.00% del tiempo de ejecucion con un total de 2.30 us y fue llamado 1 vez
+
+12-cudaHostGetDevicePointer
+Esta funcion es usada en la linea 166 y 167 y sirve para devolver un apuntador en el host asignado por cudaHostAlloc, sus parametros son:
+	pDevice - apuntador con el resultado
+	pHost - apuntador mapeado en el host
+	flags - no se usa
+En este caso esta operacion tomo un 0.00% del tiempo de ejecucion con un total de 2.10 us y fue llamado 2 veces
+
+13--cuDeviceGetCount
+Esta funcion no es usada directamente en el codigo y sirve para obtener el numero de dispositivos en el sistema
+En este caso esta operacion tomo un 0.00% del tiempo de ejecucion con un total de 1.60 ns y fue llamado 3 veces
+
+14-cuDeviceGet
+Esta funcion no es usada en el codigo y retorna un identificador en el rango  [0, cuDeviceGetCount()-1]
+En este caso esta operacion tomo un 0.00% del tiempo de ejecucion con un total de 1.10 us y fue llamado 2 veces
+
+15-cuDeviceGetName
+Esta funcion no es usada directamente en el codigo y retorna el nombre de un dispositivo
+En este caso esta operacion tomo un 0.00% del tiempo de ejecucion con un total de 700 ns y fue llamado 1 vez
+
+16-cuDeviceTotalMem
+Esta funcion no es usada directamente en el codigo y retorna cuanta memoria existe en total en el dispositivo
+En este caso esta operacion tomo un 0.00% del tiempo de ejecucion con un total de 300 ns y fue llamado 1 vez
+
+17-cuDeviceGetUuid
+Esta funcion no es usada directamente en el codigo y retorna un UUID para el dispositivo
+En este caso esta operacion tomo un 0.00% del tiempo de ejecucion con un total de 200 ns y fue llamado 1 vez
