@@ -1,0 +1,69 @@
+Se realizaron 1 actividades de GPU:
+1-sumMatrixGPU
+Esta funcion es declarada en la linea 72, es usada en la linea 139 y 144 y se encarga de sumar matrices usando la GPU, sus parametros son:
+	MatA, MatB - matrices a ser sumadas
+	MatC - Matriz con el resultado
+	nx, ny - tamaño de la matriz
+En este caso esta operacion tomo un 100.00% del tiempo de ejecucion con un total de 12.94 ms y fue llamado 2 vez
+
+Se realizaron 15 llamados de API:
+1-cudaMallocManaged
+Esta funcion es usada en la linea 110, 111, 112 y 113 y sirve para asignar memoria que sera utilizada por el systema de memoria unificada
+En este caso esta operacion tomo un 91.39% del tiempo de ejecucion con un total de 815.38 ms y fue llamado 4 vez
+
+2-cudaDeviceReset
+Esta funcion es usada en la linea 164 y sirve para liberar cualquier espacio en memoria que tenga que ver con el programa actual
+y resetear sus valores
+En este caso esta operacion tomo un 3.45% del tiempo de ejecucion con un total de 30.80 ms y fue llamado 1 veces
+
+3-cudaFree
+Esta funcion es usada en la linea 158, 159, 160 y 161 y sirve para liberar el espacio en memoria de una direccion especifica
+En este caso esta operacion tomo un 3.31% del tiempo de ejecucion con un total de 29.56 ms y fue llamado 4 veces
+
+4-cudaDeviceSynchronize
+Esta funcion es usada en la linea 146 y sive para esperar a que el dispositivo termine
+En este caso esta operacion tomo un 1.52% del tiempo de ejecucion con un total de 13.58 ms y fue llamado 1 veces
+
+5-cuDeviceGetPCIBusId
+Esta funcion no es usada directamente en el codigo pero retorna un Bus PCI que lleva a la GP en la forma de una cadena de caracteres
+En este caso esta operacion tomo un 0.24% del tiempo de ejecucion con un total de 2.16 ms y fue llamado 1 vez
+
+6-cudaLaunchKernel
+Esta funcion no es usada directamente en el codigo y se encarga de ejecutar una funcion de la GPU
+En este caso esta operacion tomo un 0.07% del tiempo de ejecucion con un total de 644.20 us y fue llamado 2 veces
+
+7-cuDeviceGetAttribute
+Esta funcion no se encuantra directamente en el codigo y se encarga de devolver informacion acerca de la GPU
+En este caso esta operacion tomo un 0.00% del tiempo de ejecucion con un total de 14.10 us y fue llamado 101 veces
+
+8-cudaSetDevice
+Esta funcion es usada en la linea 94 y sirve paraestablecer que dispositivo se usara para las operaciones de GPU
+En este caso esta operacion tomo un 0.00% del tiempo de ejecucion con un total de 5.80 us y fue llamado 1 vez
+
+9-cudaGetDeviceProperties
+Esta funcion es usada en la linea 92 y sirve para obtener informacion acerca de la GPU
+En este caso esta operacion tomo un 0.00% del tiempo de ejecucion con un total de 4.00 us y fue llamado 1 vez
+
+10-cuDeviceGetCount
+Esta funcion no es usada directamente en el codigo y sirve para obtener el numero de dispositivos en el sistema
+En este caso esta operacion tomo un 0.00% del tiempo de ejecucion con un total de 1.20 ns y fue llamado 3 veces
+
+11-cuDeviceGet
+Esta funcion no es usada en el codigo y retorna un identificador en el rango  [0, cuDeviceGetCount()-1]
+En este caso esta operacion tomo un 0.00% del tiempo de ejecucion con un total de 1.10 us y fue llamado 2 veces
+
+12-cudaGetLastError
+Esta funcion es usada en la linea 152 y sirve para retornar el ultimo error que se a producido en el programa y resetearlo a cudaSuccess
+En este caso esta operacion tomo un 0.00% del tiempo de ejecucion con un total de 900 ns y fue llamado 1 veces
+
+13-cuDeviceGetName
+Esta funcion no es usada directamente en el codigo y retorna el nombre de un dispositivo
+En este caso esta operacion tomo un 0.00% del tiempo de ejecucion con un total de 700 ns y fue llamado 1 vez
+
+14-cuDeviceTotalMem
+Esta funcion no es usada directamente en el codigo y retorna cuanta memoria existe en total en el dispositivo
+En este caso esta operacion tomo un 0.00% del tiempo de ejecucion con un total de 300 ns y fue llamado 1 vez
+
+15-cuDeviceGetUuid
+Esta funcion no es usada directamente en el codigo y retorna un UUID para el dispositivo
+En este caso esta operacion tomo un 0.00% del tiempo de ejecucion con un total de 200 ns y fue llamado 1 vez
