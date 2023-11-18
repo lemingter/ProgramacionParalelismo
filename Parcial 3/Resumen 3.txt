@@ -1,0 +1,206 @@
+Cualificador Volatil
+Declarar una variable global usando un cualificador volatil previene la optimizacion del compilador y hace que cualquier referencia a la variable
+se compile como una lectura o escritura de memoria global lo cual evita la cache
+
+Dispocicion de la memoria compartida
+Puntos importantes para el entendimiento de la memoria compartida tenemos los siguientes puntos
+-Arreglos cuadrados vs rectangulares
+-Acceso de la fila mayor vs columna mayor
+-Declaracion de memoria comparida estatica vs dinamica
+-Alcance del archivo vs el Kernel
+-Padding en memoria vs no padding
+
+
+Memoria compartida cuadrada
+Al usar memoria compartida cuadrada para almacenar datos globales tienes acceso a una simple forma de calcular los desplasamientos de la  memoria 1D desde 
+los indices 2D de los hilos
+
+Se puede declarar una variable estatica 2D en memoria compartida de la siguiente forma:
+	__shared__ int tile [N][N];
+
+Al ser esta variable en memoria compartida cuadrada se puede acceder a ella con un cloque de hilos 2D de esta forma:
+	tile[threadIdx.y][threadIdx.x]
+
+Esta es una forma mucho mas eficiente y de menor conflicto
+	tile[threadIdx.x][threadIdx.y]
+
+
+Fila Mayor VS Columna Mayor
+Ya que tenemos la declaracion del arreglo 2D en la memoria compartida se nesecitara calcular el index global para cada hilo a partir de su ID 2D
+en este ejemplo solo de utiliza un bloque de hilos por lo tanto la convercion puede simplificase
+	unsigned int idx = threadIdx.y * blockDim.x + threadIdx.x;
+
+Podemos almacenar idx en el arreglo de salida para visualizar el patron de acceso del kernel basandonos en donde los hilos almacenan sus IDs globales
+esto se puede lograr de la siguiente forma
+	tile[threadIdx.y][threadIdx.x] = idx;
+
+Una vez se dincronizen los hilos, estos deberan de haber guardado informacion en el espacio memoria compartida para poder asignar valores a la memoria global
+esto se puede lograr de la siguiente forma 
+	out[idx] = tile[threadIdx.y][threadIdx.x];
+
+Ya que usamos un mismo Warp los valores de threadIdx.x son consecutivos y se usa para indexar el arreglo nuestro kernel esta lible de conflictos de banco
+
+Por otro lado si Intercambiamos threadIdx.y con threadIdx.x a la hora de asignar los indices tendremos un conflicto de banco que dependera de la arquitectura 
+que estemos usando
+
+
+Escribiendo en Row-Major y leyendo en Column-Mayor
+La escritura en el modo Row-Major se puede implementa de la siguiente forma
+	tile[threadIdx.y][threadIdx.x] = idx;
+
+Para asignar los valores en la memoria compartida simplemente intercambiamos los indices
+	out[idx] = tile[threadIdx.x][threadIdx.y];
+
+Al hacer esto la operacion de almacenamiento esta libre de conflictos pero la operacion de carga presenta conflictos
+
+
+Memoria compartida Dinamica
+Los kernel anteriores pueden implementar el uso de memoria compartida dinamica ya sea declarandola fuera del kernel en caso de que quieras usarla en todo el 
+programa o dentro del kernel si su uso se confinara al mismo
+
+para hacer eso nececitaremos dos indices
+	row_idx - Desplasamiento de memoria de modo Row-Major
+	col_idx - Desplasamiento de memoria de modo Column-Major
+
+Escribimos en la memoria compartida en Row-Major tal que
+	tile[row_idx] = row_idx;
+
+Despues de sincronizar la memoria ya que la memoria a a sido llenada la podemos leer en Column-Major tal que
+	out[row_idx] = tile[col_idx];
+
+Ya que out se guarda en memoria global y los hilos estan acomodados en Row-Major es recomendable escribir en orden Row-Major con las coordenadas de hilos para
+asegurar un simple almacenamiento
+
+El tamaño de la memoria debe ser especificado al ejecutar el Kernel tal que:
+	setRowReadColDyn<<<grid, block, BDIMX * BDIMY * sizeof(int)>>>(d_C);
+
+
+Padding estatico en declaracion de memoria compartida
+Los conflictos de bancos de memoria en una memoria compartida rectangular pueden ser resueltos utilizando un padding
+
+Primeramente se define un macro que almacena en numero de columnas a desplazarnos para agilizar el codigo tal que:
+	#define NPAD 2
+
+La declaracion de el padding estatico en la memoria compartida es tal que:
+	 __shared__ int tile[BDIMY][BDIMX + NPAD];
+
+Al agregar el padding podemos obserbar en el reporte de operaciones que la carga de memoria compartida es dividida en dos transacciones
+
+
+Padding dinamico declarado en memoria compartida
+El padding puede ser implementado en kernel que usen memoria rectangular dinamica
+Ya que la memoria compartida y la global tendran distintos paddings se utilizaran 3 indices
+	row_idx - indice de fila para el padding de la memoria compartida
+	col_idx - indice de columna para el padding de la memoria compartida
+	g_idx - indice a la memoria global lineal
+
+Los cuales se pueden calcular tal que:
+	unsigned int g_idx = threadIdx.y * blockDim.x + threadIdx.x;
+        unsigned int irow = g_idx / blockDim.y;
+        unsigned int icol = g_idx % blockDim.y;
+        unsigned int row_idx = threadIdx.y * (blockDim.x + IPAD) + threadIdx.x;
+        unsigned int col_idx = icol * (blockDim.x + IPAD) + irow;
+
+Al comprobar los resultados, el padding cumple con su funcion de reducir las transacciones por accion
+
+
+Comparando el rendimiento de kernels con memoria compartida cuadrada
+Usando los resultados de los codigos usados hasta el momento podemos observar dos patrones
+	Kernels que usan padding mejoran el rendimiento gracias a la reduccion de conflictos en el banco
+	Kernels con memoria compartida dinamica tienen una pequeña mejora en el uso de recursos
+
+Memoria compartida rectangular
+Una memoria compartida rectangular es un caso mas usual a la hora de usar memoria compartida 2D, en esta el numero de filas y columnas no es el mismo
+	__shared__ int tile[Row][Col];
+
+Al tener distintas dimenciones uno no puede intercambiar las coordenadas de hilos a la hora de referenciar un arreglo rectangular ya que esto provocaria 
+un acceso de memoria invalido
+
+para estos ejempos se usaran arreglos rectangulares de 32 elementos por fila y 16 elementos por columna, estas dimenciones las podemos establecer con los macros:
+	#define BDIMX 32
+	#define BDIMY 16
+
+La memoria compartida rectangular es declarada tal que:
+	__shared__ int tile[BDIMY][BDIMX];
+
+Por fines de simplicidad el kernel sera ejecutado usando un solo grid y un solo bloque 2D con las mismas dimenciones que el arreglo rectangular en la memoria 
+compartida, estos seran declarados de la siguiente forma
+	dim3 block (BDIMX,BDIMY);
+	dim3 grid (1,1);
+
+Accesando Row-Major VS Column-Major
+Los primeros dos kernels a investigar tambien fueron usados en el caso cuadrado 
+	__global__ void setRowReadRow(int *out);
+	__global__ void setColReadCol(int *out);
+
+A la hora de declarar la memoria compartida rectangular tenemos que tener cuidado con el orden de los indices, el uso correcto en el kernel
+setRowReadRow seria tal que:
+	__shared__ int tile[BDIMY][BDIMX];
+
+Mientras que en el kernel setColReadCol los indices seran invertidos
+	__shared__ int tile[BDIMX][BDIMY];
+
+Viendo los resultados, la carga y almacenamiento de la memoria compartida es hecha por una transaccion en el kernel setRowReadRow
+Esta misma accion es hecha por 8 transacciones en setColReadCol 
+Por la arquitectura del Kepler K40 la operacion repota un conflicto a 8 vias
+
+
+Escribiendo Row-Major y leyendo Column-Major
+La memoria compartida se declara tal que:
+	__shared__ int tile[BDIMY][BDIMX];
+
+Para el calculo de la memoria global y compartida primero tenemos que convertir el index 2D del hilo en un index 1D tal que:
+	unsigned int idx = threadIdx.y * blockDim.x + threadIdx.x;
+
+Este mapeado en modo Row-Major se asegura de que el acceso a la memoria global este sincronizado
+Ya que los elementos en el arreglo de salida estan transpuestos, es necesario calcular las nuevas coordenadas tal que:
+	unsigned int irow = idx / blockDim.y;
+	unsigned int icol = idx % blockDim.y;
+
+El espacio en la memoria compartida se inicializa guardando el ID de hilo global en el espacio de memoria compartida 2D, tal que:
+	tile[threadIdx.y][threadIdx.x] = idx;
+
+Ya que los warp realizan la escritura en memoria compartida en Row-Major no existen problemas de bancos de memoria
+
+Ahora podemos transponer los datos de la memoria compartida a la memoria global usando el ID de hilos 1D, tal que:
+	out[idx] = tile[icol][irow];
+
+Checando las transacciones de memoria nos damos cuanta de que las operaciones de almacenamiento no reportan problemas y las operaciones de carga 
+reportan conflictos a 8 vias
+
+
+Memoria compartida declarada de forma Dinamica
+Ya que la memoria compartida solo puede ser declarada comop arreglos 1D, un nuevo indice es necesario a la hora de convertir coordenadas de hilos 2D
+en indices 1D para memoria compartida cuando escribes por filas y lees por columnas
+	unsigned int col_idx = icol * blockDim.x + irow;
+
+A la hora de revisar las transacciones de memoria compartida podemos ver que las operaciones de escritura no tienen conflictos mientras que las operaciones 
+de lectura tienen conflictos a 8 vias
+
+
+Agregando Padding a memoria compartida estatica
+Padding tambien puede ser usado para resolver problemas en el banco de memoria para memoria compartida rectangular, primero usamos un macro para definir 
+cuanto padding vamos a agregar
+	#define NPAD 2
+
+Luego declaramos la memoria tal que:
+	__shared__ int tile[BDIMY][BDIMX + NPAD];
+
+El kernel setRowReadColPad es identico al setRowReadCol con la excepcion de qie se agrega el padding a la memoria
+
+Revisando las transacciones de memoria podemos ver que ajustando la cantidad de padding a 1 tenemos un conflicto a dos vias a la hora de ejecutar el kernel
+
+
+Agregando padding a memoria compartida dinamica
+Ya que la memoria compartida y global tendran diferentes tamaños 3 indices tendran que ser mantenidos por cada hilo en el kernel:
+	row_idx
+	col_idx
+	g_idx
+
+A la hora de revisar los resultados comprobamos que las solicitudes por transaccion son reducidas
+
+
+Comparando el desempeño de los kernels de memoria compartida rectangular
+A la hora de comparar los Kernels podemos observar 2 fenomenos:
+	Los kernels que usan padding mejoran el desempeño removiendo los conflictops del banco de memoria
+	Los kernels con memoria dinamica muestran ser ligeramente mas lentos
